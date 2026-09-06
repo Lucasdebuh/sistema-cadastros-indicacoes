@@ -1,0 +1,66 @@
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permissoes necessarias para publicar no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicacao por vez; nao cancela a que ja esta rodando
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar o Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+
+      - name: Verificar tipos
+        run: npm run typecheck
+
+      - name: Gerar o site
+        env:
+          # Chaves publicas do Supabase (a "anon key" e segura no frontend;
+          # a protecao real esta nas politicas de RLS do banco).
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # Caminho base = /<nome-do-repositorio>/
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build:only
+
+      - name: Configurar o GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar os arquivos gerados
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    name: Publicar
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
