@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1e3a8a" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Sistema de cadastro com link de indicação exclusivo." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d4ed8'/%3E%3Cpath d='M32 16a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm0 20c9 0 16 4.5 16 10v2H16v-2c0-5.5 7-10 16-10Z' fill='white'/%3E%3C/svg%3E" />
+    <title>Cadastro</title>
+    <!--
+      Redirecionamento de SPA para GitHub Pages.
+      O arquivo 404.html converte /repo/admin?ref=X em /repo/?/admin&ref=X
+      e o script abaixo devolve a URL original para o React Router.
+      Referência: https://github.com/rafgraph/spa-github-pages (MIT)
+    -->
+    <script>
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash)
+        }
+      })(window.location)
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div style="font-family: system-ui, sans-serif; padding: 2rem; text-align: center">
+        <h1>JavaScript necessário</h1>
+        <p>Ative o JavaScript no seu navegador para acessar o formulário de cadastro.</p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
